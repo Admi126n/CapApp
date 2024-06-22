@@ -1,0 +1,23 @@
+services:
+
+  rabbitmq:
+    image: "${RABBIT_IMAGE}"
+    container_name: ${RABBIT_CONTAINER_NAME}
+    ports:
+      - ${RABBIT_DEFAULT_PORTS}
+      - ${RABBIT_MANAGEMENT_PORTS}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS}
+    volumes:
+      - "${RABBIT_VOLUME}"
+
+  postgres:
+    image: '${POSTGRES_IMAGE}'
+    container_name: "${POSTGRES_CONTAINER_NAME}"
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB_NAME}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASS}"
+    ports:
+      - ${POSTGRES_PORTS}
