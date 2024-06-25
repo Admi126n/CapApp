@@ -13,27 +13,25 @@ struct CodeVerification: View {
 	
 	@FocusState private var focusedField: FocusedField?
 	
-	@State private var codes = ["", "", "", "", ""]
+	@State private var codes = Array(repeating: "", count: 5)
 	
 	var body: some View {
 		HStack(spacing: 8) {
-			CodeField(code: $codes[0])
+			CodeTextField(code: $codes[0], onDeleteBackward: switchOnDelete)
 				.focused($focusedField, equals: .first)
 			
-			CodeField(code: $codes[1])
+			CodeTextField(code: $codes[1], onDeleteBackward: switchOnDelete)
 				.focused($focusedField, equals: .second)
 			
-			CodeField(code: $codes[2])
+			CodeTextField(code: $codes[2], onDeleteBackward: switchOnDelete)
 				.focused($focusedField, equals: .third)
 			
-			CodeField(code: $codes[3])
+			CodeTextField(code: $codes[3], onDeleteBackward: switchOnDelete)
 				.focused($focusedField, equals: .fourth)
 			
-			CodeField(code: $codes[4])
+			CodeTextField(code: $codes[4], onDeleteBackward: switchOnDelete)
 				.focused($focusedField, equals: .fifth)
 		}
-		.keyboardType(.numberPad)
-		.multilineTextAlignment(.center)
 		.padding()
 		.onAppear {
 			focusedField = .first
@@ -43,32 +41,6 @@ struct CodeVerification: View {
 			switchFocus()
 			setCode()
 		}
-	}
-}
-
-
-// MARK: - CodeField
-fileprivate struct CodeField: View {
-	
-	private let emptyColor = Color.init(white: 0.9)
-	private let filledColor = Color.green
-	
-	@Binding var code: String
-	
-	@State private var isFieldFilled = true
-	
-	var body: some View {
-		TextField("X", text: $code)
-			.padding(4)
-			.overlay {
-				RoundedRectangle(cornerRadius: 5)
-					.stroke(isFieldFilled ? emptyColor : filledColor, lineWidth: 1)
-			}
-			.onChange(of: code) {
-				withAnimation {
-					isFieldFilled = code.isEmpty
-				}
-			}
 	}
 }
 
@@ -128,6 +100,34 @@ extension CodeVerification {
 			if !codes[4].isEmpty {
 				focusedField = nil
 			}
+		}
+	}
+	
+	/// Switches focus to previous code field if current if empty
+	private func switchOnDelete() {
+		switch focusedField {
+		case .second:
+			if codes[1].isEmpty {
+				codes[0] = ""
+				focusedField = .first
+			}
+		case .third:
+			if codes[2].isEmpty {
+				codes[1] = ""
+				focusedField = .second
+			}
+		case .fourth:
+			if codes[3].isEmpty {
+				codes[2] = ""
+				focusedField = .third
+			}
+		case .fifth:
+			if codes[4].isEmpty {
+				codes[3] = ""
+				focusedField = .fourth
+			}
+		default:
+			()
 		}
 	}
 }
